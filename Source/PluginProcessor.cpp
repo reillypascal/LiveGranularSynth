@@ -24,9 +24,10 @@ LiveGranularSynthAudioProcessor::LiveGranularSynthAudioProcessor()
 #endif
 {
     synth.addSound(new GranularSound());
-    
     for (int i = 0; i < mNumVoices; ++i)
         synth.addVoice(new GranularVoice());
+    
+    synth.setNoteStealingEnabled(true);
 }
 
 LiveGranularSynthAudioProcessor::~LiveGranularSynthAudioProcessor()
@@ -172,6 +173,7 @@ void LiveGranularSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& bu
     }
     
     //setParams(); // includes setVoiceParams()
+    updateGrainParams();
     
     synth.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
 }
@@ -199,6 +201,22 @@ void LiveGranularSynthAudioProcessor::setStateInformation (const void* data, int
 {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
+}
+
+void LiveGranularSynthAudioProcessor::updateGrainParams()
+{
+    for (int i = 0; i < synth.getNumVoices(); ++i)
+    {
+        if (auto voice = dynamic_cast<GranularVoice*>(synth.getVoice(i)))
+        {
+            float attack = 50.0f;
+            float release = 50.0f;
+            
+            auto& adsr = voice->getAdsr();
+            
+            adsr.update(attack, 0.0f, 1.0f, release);
+        }
+    }
 }
 
 //==============================================================================

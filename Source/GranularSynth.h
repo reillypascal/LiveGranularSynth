@@ -50,6 +50,8 @@ public:
     
     //using juce::SynthesiserVoice::renderNextBlock;
     
+    AdsrData& getAdsr() { return adsr; }
+    
 private:
     double level { 0.0 };
     double tailOff { 0.0 };

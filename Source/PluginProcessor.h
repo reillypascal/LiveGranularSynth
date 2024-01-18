@@ -57,7 +57,10 @@ public:
     //==============================================================================
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
-
+    
+    //==============================================================================
+    void updateGrainParams();
+    
 private:
     static constexpr int mNumChannelsToProcess { 2 };
     static constexpr int mNumVoices { 16 };
